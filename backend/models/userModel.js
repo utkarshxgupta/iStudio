@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema(
       enum: ['admin', 'proctor', 'candidate'],
       default: 'candidate',
     },
+    photoUrl: { type: String }, // New field for storing photograph URL
   },
   {
     timestamps: true,

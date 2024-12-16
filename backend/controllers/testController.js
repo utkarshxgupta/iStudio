@@ -6,8 +6,13 @@ const Question = require('../models/questionModel');
 // @route   POST /api/tests
 // @access  Private (Admins/Test Creators)
 const createTest = asyncHandler(async (req, res) => {
-  const { title, description, instructions, timeLimit } = req.body;
-
+  const {
+    title,
+    description,
+    instructions,
+    timeLimit,
+    proctoringSettings,
+  } = req.body;
   // Check if required fields are provided
   if (!title) {
     res.status(400);
@@ -22,6 +27,7 @@ const createTest = asyncHandler(async (req, res) => {
     timeLimit,
     createdBy: req.user._id,
     questions: [],
+    proctoringSettings, // Save proctoring settings
   });
 
   res.status(201).json(test);
@@ -53,7 +59,13 @@ const getTestById = asyncHandler(async (req, res) => {
 // @route   PUT /api/tests/:id
 // @access  Private (Admins/Test Creators)
 const updateTest = asyncHandler(async (req, res) => {
-  const { title, description, instructions, timeLimit } = req.body;
+  const {
+    title,
+    description,
+    instructions,
+    timeLimit,
+    proctoringSettings,
+  } = req.body;
 
   const test = await Test.findById(req.params.id);
 
@@ -62,6 +74,7 @@ const updateTest = asyncHandler(async (req, res) => {
     test.description = description || test.description;
     test.instructions = instructions || test.instructions;
     test.timeLimit = timeLimit || test.timeLimit;
+    test.proctoringSettings = proctoringSettings || test.proctoringSettings;
 
     const updatedTest = await test.save();
     res.json(updatedTest);

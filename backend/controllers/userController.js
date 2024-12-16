@@ -35,6 +35,7 @@ const registerUser = asyncHandler(async (req, res) => {
     email,
     passwordHash,
     role,
+    photoUrl, // Save the photo URL
   });
 
   if (user) {

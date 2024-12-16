@@ -2,19 +2,52 @@ const asyncHandler = require('express-async-handler');
 const Assignment = require('../models/assignmentModel');
 const Question = require('../models/questionModel');
 const Response = require('../models/responseModel');
+const FaceRecognitionService = require('../services/faceRecognitionService');
 
 // @desc    Start a test
 // @route   POST /api/candidate/start-test/:assignmentId
 // @access  Private (Candidate)
 const startTest = asyncHandler(async (req, res) => {
-  const assignment = await Assignment.findById(req.params.assignmentId);
+  const assignment = await Assignment.findById(req.params.assignmentId).populate('testId');
 
   if (assignment && assignment.candidateId.toString() === req.user._id.toString()) {
+    const proctoringSettings = assignment.testId.proctoringSettings;
+
+    // Check if identity verification is enabled
+    if (proctoringSettings.identityVerification) {
+      // Expecting base64 encoded image from front-end
+      const { livePhoto } = req.body;
+
+      if (!livePhoto) {
+        res.status(400);
+        throw new Error('Live photo is required for identity verification');
+      }
+
+      // Retrieve stored photo URL of the candidate
+      const candidatePhotoUrl = req.user.photoUrl;
+
+      if (!candidatePhotoUrl) {
+        res.status(400);
+        throw new Error('Candidate photo not found');
+      }
+
+      // Use face recognition service to compare photos
+      const isMatch = await FaceRecognitionService.compareFaces(
+        candidatePhotoUrl,
+        livePhoto
+      );
+
+      if (!isMatch) {
+        res.status(403);
+        throw new Error('Identity verification failed');
+      }
+    }
+
     assignment.status = 'inProgress';
     assignment.startTime = new Date();
     await assignment.save();
 
-    res.json({ message: 'Test started' });
+    res.json({ message: 'Test started', assignmentId: assignment._id });
   } else {
     res.status(404);
     throw new Error('Assignment not found or not authorized');

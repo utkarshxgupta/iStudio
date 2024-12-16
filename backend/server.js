@@ -6,6 +6,7 @@ const testRoutes = require('./routes/testRoutes');
 const questionRoutes = require('./routes/questionRoutes');
 const assignmentRoutes = require('./routes/assignmentRoutes');
 const candidateRoutes = require('./routes/candidateRoutes');
+const proctoringRoutes = require('./routes/proctoringRoutes');
 const cors = require('cors');
 
 dotenv.config();
@@ -24,6 +25,7 @@ app.use('/api/tests', testRoutes);
 app.use('/api/questions', questionRoutes);
 app.use('/api/assignments', assignmentRoutes);
 app.use('/api/candidate', candidateRoutes);
+app.use('/api/proctoring', proctoringRoutes);
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {

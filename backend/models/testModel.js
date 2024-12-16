@@ -17,6 +17,14 @@ const testSchema = new mongoose.Schema(
         ref: 'Question',
       },
     ],
+    proctoringSettings: {
+      identityVerification: { type: Boolean, default: true },
+      multipleFacesDetection: { type: Boolean, default: true },
+      faceDetection: { type: Boolean, default: true },
+      appSwitchDetection: { type: Boolean, default: true },
+      warningsLimit: { type: Number, default: 3 },
+      autoLogout: { type: Boolean, default: true },
+    }, // New field for proctoring settings
   },
   {
     timestamps: true,

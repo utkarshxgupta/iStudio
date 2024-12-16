@@ -1,0 +1,1 @@
+// This will be very similar to Login.js, but it will make a POST request to /api/users/register and handle the registration response. It should also include a way to upload a photo. You'll need to handle file uploads on both the client and server-side. Consider using a library like react-dropzone for a user-friendly upload experience.
